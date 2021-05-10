@@ -75,7 +75,7 @@ func run() {
 		originX:   10,
 		originY:   windowHeight - 10,
 		cellSize:  50,
-		wallWidth: 2,
+		wallWidth: 1,
 		thickness: 0,
 		drawWalls: true,
 	}
