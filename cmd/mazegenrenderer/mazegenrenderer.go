@@ -99,7 +99,7 @@ func run() {
 
 			state = "render"
 		case "render":
-			window.Clear(colornames.Black)
+			window.Clear(colornames.White)
 			drawMaze(debug, text, window, grid, mazeDrawData)
 			state = "view"
 		case "view":
@@ -144,7 +144,7 @@ func drawMaze(
 	// ).Draw(window)
 	{
 		shape := imdraw.New(nil)
-		shape.Color = colornames.White
+		shape.Color = colornames.Lightgray
 		p0 := pixel.V(originX, originY)
 		fmt.Println(p0)
 		shape.Push(p0)
@@ -159,25 +159,27 @@ func drawMaze(
 
 	count := 0
 	for y, cells := range grid.Cells {
-		drawY := originY - (float64(y) * cellSize)
+		drawY := originY - (float64(y+1) * cellSize)
 		for x, cell := range cells {
 
 			drawX := originX + (float64(x) * cellSize)
 			// rectShape := buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, 1)
 			// rectShape.Draw(window)
 
+			wallColor := colornames.Black
+
 			if drawWalls {
 				if cell.Walls[mazegen.North] {
-					buildRectangle(drawX, drawY+(cellSize-wallWidth), wallWidth, cellSize, colornames.Blue, thickness).Draw(window)
+					buildRectangle(drawX, drawY+(cellSize-wallWidth), wallWidth, cellSize, wallColor, thickness).Draw(window)
 				}
 				if cell.Walls[mazegen.East] {
-					buildRectangle(drawX+(cellSize-wallWidth), drawY, cellSize, wallWidth, colornames.Blue, thickness).Draw(window)
+					buildRectangle(drawX+(cellSize-wallWidth), drawY, cellSize, wallWidth, wallColor, thickness).Draw(window)
 				}
 				if cell.Walls[mazegen.South] {
-					buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Blue, thickness).Draw(window)
+					buildRectangle(drawX, drawY, wallWidth, cellSize, wallColor, thickness).Draw(window)
 				}
 				if cell.Walls[mazegen.West] {
-					buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Blue, thickness).Draw(window)
+					buildRectangle(drawX, drawY, cellSize, wallWidth, wallColor, thickness).Draw(window)
 				}
 			}
 
