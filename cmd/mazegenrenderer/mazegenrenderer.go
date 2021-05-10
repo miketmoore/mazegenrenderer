@@ -23,6 +23,17 @@ type MazeDrawData struct {
 const windowHeight = 800
 const windowWidth = 800
 
+var mazeDrawData = &MazeDrawData{
+	rows:      78,
+	columns:   78,
+	originX:   10,
+	originY:   windowHeight - 10,
+	cellSize:  10,
+	wallWidth: 1,
+	thickness: 0,
+	drawWalls: true,
+}
+
 func run() {
 
 	argsWithoutProg := os.Args[1:]
@@ -80,17 +91,6 @@ func run() {
 	state := "buildmaze"
 
 	var grid *mazegen.Grid
-
-	mazeDrawData := &MazeDrawData{
-		rows:      15,
-		columns:   15,
-		originX:   10,
-		originY:   windowHeight - 10,
-		cellSize:  50,
-		wallWidth: 1,
-		thickness: 0,
-		drawWalls: true,
-	}
 
 	for !window.Closed() {
 
