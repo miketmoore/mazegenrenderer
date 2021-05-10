@@ -76,6 +76,7 @@ func run() {
 			wallWidth := 2.0
 			thickness := 0.0
 
+			count := 0
 			for y, cells := range grid.Cells {
 				drawY := originY - (float64(y) * cellSize)
 				for x, cell := range cells {
@@ -100,7 +101,8 @@ func run() {
 					}
 
 					if debug {
-						message := fmt.Sprintf("%d,%d", y, x)
+						// message := fmt.Sprintf("%d,%d", y, x)
+						message := fmt.Sprintf("%d", count)
 						txt.Clear()
 						fmt.Fprintln(txt, message)
 					}
@@ -118,7 +120,7 @@ func run() {
 					matrix := pixel.IM.Moved(vectorDiff)
 					matrix = matrix.Scaled(txt.Orig, 1)
 					txt.Draw(win, matrix)
-
+					count++
 				}
 			}
 			state = "view"

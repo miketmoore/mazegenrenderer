@@ -12,6 +12,7 @@ require (
 	golang.org/x/image v0.0.0-20210504121937-7319ad40d33e
 )
 
-replace (
-   github.com/miketmoore/mazegen => ../mazegen
-)
+// Uncomment for local development
+// replace (
+//    github.com/miketmoore/mazegen => ../mazegen
+// )
