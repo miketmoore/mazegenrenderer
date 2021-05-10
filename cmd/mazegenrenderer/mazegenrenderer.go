@@ -20,6 +20,9 @@ type MazeDrawData struct {
 	drawWalls                                        bool
 }
 
+const windowHeight = 800
+const windowWidth = 800
+
 func run() {
 
 	argsWithoutProg := os.Args[1:]
@@ -42,7 +45,7 @@ func run() {
 	window, err := pixelgl.NewWindow(
 		pixelgl.WindowConfig{
 			Title:  "Maze",
-			Bounds: pixel.R(0, 0, 800, 800),
+			Bounds: pixel.R(0, 0, windowWidth, windowHeight),
 			VSync:  true,
 		},
 	)
@@ -70,7 +73,7 @@ func run() {
 		rows:      15,
 		columns:   15,
 		originX:   10,
-		originY:   740,
+		originY:   windowHeight - 10,
 		cellSize:  50,
 		wallWidth: 2,
 		thickness: 0,
@@ -142,7 +145,9 @@ func drawMaze(
 	{
 		shape := imdraw.New(nil)
 		shape.Color = colornames.White
-		shape.Push(pixel.V(originX, originY))
+		p0 := pixel.V(originX, originY)
+		fmt.Println(p0)
+		shape.Push(p0)
 
 		width := float64(columns) * cellSize
 		height := float64(rows) * cellSize
