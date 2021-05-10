@@ -8,6 +8,7 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
+	"github.com/faiface/pixel/text"
 	"github.com/miketmoore/mazegen"
 	"golang.org/x/image/colornames"
 )
@@ -65,6 +66,13 @@ func run() {
 	}
 	fmt.Println("window initialized")
 
+	fmt.Println("initializing text...")
+	// Initialize text
+	orig := pixel.V(20, 50)
+	txt := text.New(orig, text.Atlas7x13)
+	txt.Color = colornames.Black
+	fmt.Println("text initialized")
+
 	state := "buildmaze"
 
 	var grid *mazegen.Grid
@@ -78,8 +86,8 @@ func run() {
 
 		switch state {
 		case "buildmaze":
-			rows := 20
-			cols := 20
+			rows := 3
+			cols := 3
 			random := mazegen.NewRandom()
 			grid = nil
 			grid, err = mazegen.BuildMaze(rows, cols, random)
@@ -91,15 +99,43 @@ func run() {
 			state = "render"
 		case "render":
 			originX := 100.0
-			originY := 100.0
+			originY := 400.0
 			cellSize := 30.0
-			wallWidth := 8.0
+			wallWidth := 2.0
+
+			//  y,x
+			// mazegen data
+			//   ______ ______ ______ ______
+			//  |0,0   |0,1   |0,2   |0,3   |
+			//  |      |      |      |      |
+			//   ______ ______ ______ ______
+			//  |1,0   |1,1   |1,2   |1,3   |
+			//  |      |      |      |      |
+			//   ______ ______ ______ ______
+			//  |2,0   |2,1   |2,2   |2,3   |
+			//  |      |      |      |      |
+			//   ______ ______ ______ ______
+
+			//  y,x
+			// pixel coordinates
+			//   ______ ______ ______ ______
+			//  |2,0   |2,1   |2,2   |2,3   |
+			//  |      |      |      |      |
+			//   ______ ______ ______ ______
+			//  |1,0   |1,1   |1,2   |1,3   |
+			//  |      |      |      |      |
+			//   ______ ______ ______ ______
+			//  |0,0   |0,1   |0,2   |0,3   |
+			//  |      |      |      |      |
+			//   ______ ______ ______ ______
+
 			for y, cells := range grid.Cells {
-				drawY := originY + (float64(y) * cellSize)
+				drawY := originY - (float64(y) * cellSize)
 				for x, cell := range cells {
 
 					drawX := originX + (float64(x) * cellSize)
-					buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, 0).Draw(win)
+					rectShape := buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, 0)
+					rectShape.Draw(win)
 
 					if cell.Walls[mazegen.North] {
 						buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Blue, 0).Draw(win)
@@ -113,6 +149,13 @@ func run() {
 					if cell.Walls[mazegen.West] {
 						buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Blue, 0).Draw(win)
 					}
+
+					txt.Clear()
+					txt.Color = colornames.Green
+					message := fmt.Sprintf("%d,%d", y, x)
+					fmt.Fprintln(txt, message)
+					rect := pixel.R(drawX, drawY, drawX+cellSize, drawY+cellSize)
+					txt.Draw(win, pixel.IM.Moved(rect.Center().Sub(txt.Bounds().Center())))
 
 				}
 			}

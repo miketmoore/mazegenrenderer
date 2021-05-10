@@ -9,5 +9,9 @@ require (
 	github.com/go-gl/mathgl v1.0.0 // indirect
 	github.com/miketmoore/mazegen v0.0.0-20210510020026-739193c006a1
 	github.com/pkg/errors v0.9.1 // indirect
-	golang.org/x/image v0.0.0-20210504121937-7319ad40d33e // indirect
+	golang.org/x/image v0.0.0-20210504121937-7319ad40d33e
+)
+
+replace (
+   github.com/miketmoore/mazegen => ../mazegen
 )
