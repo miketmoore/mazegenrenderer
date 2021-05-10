@@ -37,11 +37,23 @@ func run() {
 		}
 	}
 
-	fmt.Printf("debug=%t\n", debug)
-	fmt.Printf("drawWalls=%t\n", drawWalls)
+	debugPrintf := func(format string, a ...interface{}) {
+		if debug {
+			fmt.Printf(format, a...)
+		}
+	}
+
+	debugPrintln := func(a ...interface{}) {
+		if debug {
+			fmt.Println(a)
+		}
+	}
+
+	debugPrintf("debug=%t\n", debug)
+	debugPrintf("drawWalls=%t\n", drawWalls)
 
 	// Initialize window
-	fmt.Println("initializing window...")
+	debugPrintln("initializing window...")
 	window, err := pixelgl.NewWindow(
 		pixelgl.WindowConfig{
 			Title:  "Maze",
@@ -54,16 +66,16 @@ func run() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println("window initialized")
+	debugPrintln("window initialized")
 
-	fmt.Println("initializing text...")
+	debugPrintln("initializing text...")
 	// Initialize text
 	// orig := pixel.V(20, 50)
 	atlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
 	text := text.New(pixel.V(20, 50), atlas)
 	// text := text.New(orig, text.Atlas7x13)
 	text.Color = colornames.Green
-	fmt.Println("text initialized")
+	debugPrintln("text initialized")
 
 	state := "buildmaze"
 
@@ -146,7 +158,6 @@ func drawMaze(
 		shape := imdraw.New(nil)
 		shape.Color = colornames.Lightgray
 		p0 := pixel.V(originX, originY)
-		fmt.Println(p0)
 		shape.Push(p0)
 
 		width := float64(columns) * cellSize
@@ -232,6 +243,5 @@ func buildRectangle(x, y, w, h float64, color color.RGBA, thickness float64) *im
 // }
 
 func main() {
-	fmt.Println("main")
 	pixelgl.Run(run)
 }
