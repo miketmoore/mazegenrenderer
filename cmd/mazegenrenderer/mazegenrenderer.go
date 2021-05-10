@@ -94,15 +94,15 @@ func run() {
 			for y, cells := range grid.Cells {
 				drawY := originY + (float64(y) * cellSize)
 				for x := range cells {
-					shape := imdraw.New(nil)
-					shape.Color = colornames.Blue
 
 					drawX := originX + (float64(x) * cellSize)
+					buildRectangle(drawX, drawY, cellSize, cellSize).Draw(win)
 
-					shape.Push(pixel.V(drawX, drawY))
-					shape.Push(pixel.V(drawX+cellSize, drawY+cellSize))
-					shape.Rectangle(1)
-					shape.Draw(win)
+					// if cell.Walls[mazegen.North] == true {
+					// 	// draw north wall
+
+					// 	drawRectangle()
+					// }
 
 				}
 			}
@@ -114,6 +114,15 @@ func run() {
 		win.Update()
 
 	}
+}
+
+func buildRectangle(x, y, w, h float64) *imdraw.IMDraw {
+	shape := imdraw.New(nil)
+	shape.Color = colornames.Blue
+	shape.Push(pixel.V(x, y))
+	shape.Push(pixel.V(x+h, y+w))
+	shape.Rectangle(1)
+	return shape
 }
 
 // func drawRectangle() {
