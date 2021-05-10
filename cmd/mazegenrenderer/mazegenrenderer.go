@@ -5,8 +5,10 @@ import (
 	"os"
 
 	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/miketmoore/mazegen"
+	"golang.org/x/image/colornames"
 )
 
 // func main() {
@@ -75,8 +77,8 @@ func run() {
 
 		switch state {
 		case "buildmaze":
-			rows := 2
-			cols := 2
+			rows := 20
+			cols := 20
 			random := mazegen.NewRandom()
 			grid, err = mazegen.BuildMaze(rows, cols, random)
 			if err != nil {
@@ -84,14 +86,28 @@ func run() {
 				os.Exit(0)
 			}
 
-			for rowIndex, row := range grid.Cells {
-				for columnIndex, cell := range row {
-					fmt.Println(rowIndex, columnIndex, cell)
-				}
-			}
-
 			state = "render"
 		case "render":
+			originX := 100.0
+			originY := 100.0
+			cellSize := 25.0
+			for y, cells := range grid.Cells {
+				drawY := originY + (float64(y) * cellSize)
+				for x := range cells {
+					shape := imdraw.New(nil)
+					shape.Color = colornames.Blue
+
+					drawX := originX + (float64(x) * cellSize)
+
+					shape.Push(pixel.V(drawX, drawY))
+					shape.Push(pixel.V(drawX+cellSize, drawY+cellSize))
+					shape.Rectangle(1)
+					shape.Draw(win)
+
+				}
+			}
+			state = "view"
+		case "view":
 			//
 		}
 
@@ -99,6 +115,20 @@ func run() {
 
 	}
 }
+
+// func drawRectangle() {
+
+// 	// rect := entity.componentShape.Shape
+// 	// rect.Color = entity.componentColor.Color
+
+// 	// rect.Push(entity.componentRectangle.Rect.Min)
+
+// 	// rect.Push(entity.componentRectangle.Rect.Max)
+
+// 	// rect.Rectangle(0)
+
+// 	// rect.Draw(s.Win)
+// }
 
 func main() {
 	fmt.Println("main")
