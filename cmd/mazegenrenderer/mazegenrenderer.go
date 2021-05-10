@@ -97,13 +97,6 @@ func run() {
 			state = "render"
 		case "render":
 			window.Clear(colornames.Black)
-
-			// originX := 10.0
-			// originY := 740.0
-			// cellSize := 50.0
-			// wallWidth := 2.0
-			// thickness := 0.0
-
 			drawMaze(debug, text, window, grid, mazeDrawData)
 			state = "view"
 		case "view":
@@ -125,6 +118,8 @@ func drawMaze(
 	mazeDrawData *MazeDrawData,
 ) {
 
+	rows := mazeDrawData.rows
+	columns := mazeDrawData.columns
 	originX := mazeDrawData.originX
 	originY := mazeDrawData.originY
 	cellSize := mazeDrawData.cellSize
@@ -132,14 +127,39 @@ func drawMaze(
 	thickness := mazeDrawData.thickness
 	drawWalls := mazeDrawData.drawWalls
 
+	// draw background
+	// buildRectangle(
+	// 	originX,
+	// 	originY,
+	// 	float64(columns)*cellSize,
+	// 	cellSize,
+	// 	// float64(rows)*cellSize,
+	// 	// originX+(float64(columns)*cellSize),
+	// 	// originY+(float64(rows)*cellSize),
+	// 	colornames.White,
+	// 	0,
+	// ).Draw(window)
+	{
+		shape := imdraw.New(nil)
+		shape.Color = colornames.White
+		shape.Push(pixel.V(originX, originY))
+
+		width := float64(columns) * cellSize
+		height := float64(rows) * cellSize
+		shape.Push(pixel.V(originX+width, originY-height))
+
+		shape.Rectangle(thickness)
+		shape.Draw(window)
+	}
+
 	count := 0
 	for y, cells := range grid.Cells {
 		drawY := originY - (float64(y) * cellSize)
 		for x, cell := range cells {
 
 			drawX := originX + (float64(x) * cellSize)
-			rectShape := buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, 1)
-			rectShape.Draw(window)
+			// rectShape := buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, 1)
+			// rectShape.Draw(window)
 
 			if drawWalls {
 				if cell.Walls[mazegen.North] {
