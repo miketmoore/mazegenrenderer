@@ -63,7 +63,6 @@ func run() {
 	debugPrintf("debug=%t\n", debug)
 	debugPrintf("drawWalls=%t\n", drawWalls)
 
-	// Initialize window
 	debugPrintln("initializing window...")
 	window, err := pixelgl.NewWindow(
 		pixelgl.WindowConfig{
@@ -80,11 +79,8 @@ func run() {
 	debugPrintln("window initialized")
 
 	debugPrintln("initializing text...")
-	// Initialize text
-	// orig := pixel.V(20, 50)
 	atlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
 	text := text.New(pixel.V(20, 50), atlas)
-	// text := text.New(orig, text.Atlas7x13)
 	text.Color = colornames.Green
 	debugPrintln("text initialized")
 
@@ -143,17 +139,6 @@ func drawMaze(
 	drawWalls := mazeDrawData.drawWalls
 
 	// draw background
-	// buildRectangle(
-	// 	originX,
-	// 	originY,
-	// 	float64(columns)*cellSize,
-	// 	cellSize,
-	// 	// float64(rows)*cellSize,
-	// 	// originX+(float64(columns)*cellSize),
-	// 	// originY+(float64(rows)*cellSize),
-	// 	colornames.White,
-	// 	0,
-	// ).Draw(window)
 	{
 		shape := imdraw.New(nil)
 		shape.Color = colornames.Lightgray
@@ -174,8 +159,6 @@ func drawMaze(
 		for x, cell := range cells {
 
 			drawX := originX + (float64(x) * cellSize)
-			// rectShape := buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, 1)
-			// rectShape.Draw(window)
 
 			wallColor := colornames.Black
 
@@ -195,22 +178,16 @@ func drawMaze(
 			}
 
 			if debug {
-				// message := fmt.Sprintf("%d,%d", y, x)
 				message := fmt.Sprintf("%d", count)
 				text.Clear()
 				fmt.Fprintln(text, message)
 			}
 
-			// text.Color = colornames.Green
-			// fmt.Fprintln(text, message)
 			rect := pixel.R(drawX, drawY, drawX+cellSize, drawY+cellSize)
-			// text.Draw(window, pixel.IM.Moved(rect.Center().Sub(text.Bounds().Center())))
 
 			cellCenter := rect.Center()
 			vectorDiff := cellCenter.Sub(text.Bounds().Center())
 
-			// matrix := pixel.IM.Moved(rect.Center().Sub(text.Bounds().Center()))
-			// matrix := pixel.IM.Scaled(text.Orig, 2)
 			matrix := pixel.IM.Moved(vectorDiff)
 			matrix = matrix.Scaled(text.Orig, 1)
 			text.Draw(window, matrix)
@@ -227,20 +204,6 @@ func buildRectangle(x, y, w, h float64, color color.RGBA, thickness float64) *im
 	shape.Rectangle(thickness)
 	return shape
 }
-
-// func drawRectangle() {
-
-// 	// rect := entity.componentShape.Shape
-// 	// rect.Color = entity.componentColor.Color
-
-// 	// rect.Push(entity.componentRectangle.Rect.Min)
-
-// 	// rect.Push(entity.componentRectangle.Rect.Max)
-
-// 	// rect.Rectangle(0)
-
-// 	// rect.Draw(s.Win)
-// }
 
 func main() {
 	pixelgl.Run(run)
