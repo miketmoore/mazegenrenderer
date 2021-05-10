@@ -11,6 +11,7 @@ import (
 	"github.com/faiface/pixel/text"
 	"github.com/miketmoore/mazegen"
 	"golang.org/x/image/colornames"
+	"golang.org/x/image/font/basicfont"
 )
 
 // func main() {
@@ -68,9 +69,11 @@ func run() {
 
 	fmt.Println("initializing text...")
 	// Initialize text
-	orig := pixel.V(20, 50)
-	txt := text.New(orig, text.Atlas7x13)
-	txt.Color = colornames.Black
+	// orig := pixel.V(20, 50)
+	atlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
+	txt := text.New(pixel.V(20, 50), atlas)
+	// txt := text.New(orig, text.Atlas7x13)
+	txt.Color = colornames.Green
 	fmt.Println("text initialized")
 
 	state := "buildmaze"
@@ -98,10 +101,10 @@ func run() {
 
 			state = "render"
 		case "render":
-			originX := 100.0
+			originX := 150.0
 			originY := 400.0
-			cellSize := 30.0
-			wallWidth := 2.0
+			cellSize := 100.0
+			// wallWidth := 15.0
 
 			//  y,x
 			// mazegen data
@@ -131,31 +134,61 @@ func run() {
 
 			for y, cells := range grid.Cells {
 				drawY := originY - (float64(y) * cellSize)
-				for x, cell := range cells {
+				for x, _ := range cells {
 
 					drawX := originX + (float64(x) * cellSize)
-					rectShape := buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, 0)
+					rectShape := buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, 1)
 					rectShape.Draw(win)
 
-					if cell.Walls[mazegen.North] {
-						buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Blue, 0).Draw(win)
-					}
-					if cell.Walls[mazegen.East] {
-						buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Blue, 0).Draw(win)
-					}
-					if cell.Walls[mazegen.South] {
-						buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Blue, 0).Draw(win)
-					}
-					if cell.Walls[mazegen.West] {
-						buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Blue, 0).Draw(win)
-					}
+					// if cell.Walls[mazegen.North] {
+					// 	buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Orange, 4).Draw(win)
+					// }
+					// if cell.Walls[mazegen.East] {
+					// 	buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Black, 4).Draw(win)
+					// }
+					// if cell.Walls[mazegen.South] {
+					// 	buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Purple, 4).Draw(win)
+					// }
+					// if cell.Walls[mazegen.West] {
+					// 	buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Red, 4).Draw(win)
+					// }
+
+					// northStr := "N"
+					// eastStr := "E"
+					// southStr := "S"
+					// westStr := "W"
+
+					// if !cell.Walls[mazegen.North] {
+					// 	northStr = "_"
+					// }
+					// if !cell.Walls[mazegen.East] {
+					// 	eastStr = "_"
+					// }
+					// if !cell.Walls[mazegen.South] {
+					// 	southStr = "_"
+					// }
+					// if !cell.Walls[mazegen.West] {
+					// 	westStr = "_"
+					// }
+
+					message := fmt.Sprintf("%d,%d", y, x)
+					// message := fmt.Sprintf("%d,%d %s%s%s%s", y, x, northStr, eastStr, southStr, westStr)
 
 					txt.Clear()
-					txt.Color = colornames.Green
-					message := fmt.Sprintf("%d,%d", y, x)
-					fmt.Fprintln(txt, message)
+					// txt.Color = colornames.Green
+					// fmt.Fprintln(txt, message)
 					rect := pixel.R(drawX, drawY, drawX+cellSize, drawY+cellSize)
-					txt.Draw(win, pixel.IM.Moved(rect.Center().Sub(txt.Bounds().Center())))
+					// txt.Draw(win, pixel.IM.Moved(rect.Center().Sub(txt.Bounds().Center())))
+					fmt.Fprintln(txt, message)
+
+					cellCenter := rect.Center()
+					vectorDiff := cellCenter.Sub(txt.Bounds().Center())
+
+					// matrix := pixel.IM.Moved(rect.Center().Sub(txt.Bounds().Center()))
+					// matrix := pixel.IM.Scaled(txt.Orig, 2)
+					matrix := pixel.IM.Moved(vectorDiff)
+					matrix = matrix.Scaled(txt.Orig, 1)
+					txt.Draw(win, matrix)
 
 				}
 			}
