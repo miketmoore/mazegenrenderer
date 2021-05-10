@@ -14,42 +14,9 @@ import (
 	"golang.org/x/image/font/basicfont"
 )
 
-// func main() {
-// 	rows := 2
-// 	cols := 2
-// 	random := mazegen.NewRandom()
-// 	grid, err := mazegen.BuildMaze(rows, cols, random)
-// 	if err != nil {
-// 		fmt.Println(err)
-// 		os.Exit(0)
-// 	}
-
-// 	for rowIndex, row := range grid.Cells {
-// 		for columnIndex, cell := range row {
-// 			fmt.Println(rowIndex, columnIndex, cell)
-// 		}
-// 	}
-// }
-
 func run() {
 
-	// main, err := zelduh.NewMain(
-	// 	debugMode,
-	// 	tileSize,
-	// 	frameRate,
-	// )
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(0)
-	// }
-
-	// err = main.Run()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(0)
-	// }
-
-	// os.Exit(1)
+	debug := true
 
 	// Initialize window
 	fmt.Println("initializing window...")
@@ -89,8 +56,8 @@ func run() {
 
 		switch state {
 		case "buildmaze":
-			rows := 3
-			cols := 3
+			rows := 15
+			cols := 15
 			random := mazegen.NewRandom()
 			grid = nil
 			grid, err = mazegen.BuildMaze(rows, cols, random)
@@ -102,37 +69,11 @@ func run() {
 			state = "render"
 		case "render":
 			win.Clear(colornames.Black)
-			originX := 150.0
-			originY := 400.0
-			cellSize := 100.0
-			wallWidth := 5.0
+			originX := 10.0
+			originY := 740.0
+			cellSize := 50.0
+			wallWidth := 2.0
 			thickness := 0.0
-
-			//  y,x
-			// mazegen data
-			//   ______ ______ ______ ______
-			//  |0,0   |0,1   |0,2   |0,3   |
-			//  |      |      |      |      |
-			//   ______ ______ ______ ______
-			//  |1,0   |1,1   |1,2   |1,3   |
-			//  |      |      |      |      |
-			//   ______ ______ ______ ______
-			//  |2,0   |2,1   |2,2   |2,3   |
-			//  |      |      |      |      |
-			//   ______ ______ ______ ______
-
-			//  y,x
-			// pixel coordinates
-			//   ______ ______ ______ ______
-			//  |2,0   |2,1   |2,2   |2,3   |
-			//  |      |      |      |      |
-			//   ______ ______ ______ ______
-			//  |1,0   |1,1   |1,2   |1,3   |
-			//  |      |      |      |      |
-			//   ______ ______ ______ ______
-			//  |0,0   |0,1   |0,2   |0,3   |
-			//  |      |      |      |      |
-			//   ______ ______ ______ ______
 
 			for y, cells := range grid.Cells {
 				drawY := originY - (float64(y) * cellSize)
@@ -155,33 +96,16 @@ func run() {
 						buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Blue, thickness).Draw(win)
 					}
 
-					// northStr := "N"
-					// eastStr := "E"
-					// southStr := "S"
-					// westStr := "W"
+					if debug {
+						message := fmt.Sprintf("%d,%d", y, x)
+						txt.Clear()
+						fmt.Fprintln(txt, message)
+					}
 
-					// if !cell.Walls[mazegen.North] {
-					// 	northStr = "_"
-					// }
-					// if !cell.Walls[mazegen.East] {
-					// 	eastStr = "_"
-					// }
-					// if !cell.Walls[mazegen.South] {
-					// 	southStr = "_"
-					// }
-					// if !cell.Walls[mazegen.West] {
-					// 	westStr = "_"
-					// }
-
-					message := fmt.Sprintf("%d,%d", y, x)
-					// message := fmt.Sprintf("%d,%d %s%s%s%s", y, x, northStr, eastStr, southStr, westStr)
-
-					txt.Clear()
 					// txt.Color = colornames.Green
 					// fmt.Fprintln(txt, message)
 					rect := pixel.R(drawX, drawY, drawX+cellSize, drawY+cellSize)
 					// txt.Draw(win, pixel.IM.Moved(rect.Center().Sub(txt.Bounds().Center())))
-					fmt.Fprintln(txt, message)
 
 					cellCenter := rect.Center()
 					vectorDiff := cellCenter.Sub(txt.Bounds().Center())
