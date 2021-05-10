@@ -101,10 +101,12 @@ func run() {
 
 			state = "render"
 		case "render":
+			win.Clear(colornames.Black)
 			originX := 150.0
 			originY := 400.0
 			cellSize := 100.0
-			// wallWidth := 15.0
+			wallWidth := 5.0
+			thickness := 0.0
 
 			//  y,x
 			// mazegen data
@@ -134,24 +136,24 @@ func run() {
 
 			for y, cells := range grid.Cells {
 				drawY := originY - (float64(y) * cellSize)
-				for x, _ := range cells {
+				for x, cell := range cells {
 
 					drawX := originX + (float64(x) * cellSize)
-					rectShape := buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, 1)
+					rectShape := buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, thickness)
 					rectShape.Draw(win)
 
-					// if cell.Walls[mazegen.North] {
-					// 	buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Orange, 4).Draw(win)
-					// }
-					// if cell.Walls[mazegen.East] {
-					// 	buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Black, 4).Draw(win)
-					// }
-					// if cell.Walls[mazegen.South] {
-					// 	buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Purple, 4).Draw(win)
-					// }
-					// if cell.Walls[mazegen.West] {
-					// 	buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Red, 4).Draw(win)
-					// }
+					if cell.Walls[mazegen.North] {
+						buildRectangle(drawX, drawY+(cellSize-wallWidth), wallWidth, cellSize, colornames.Blue, thickness).Draw(win)
+					}
+					if cell.Walls[mazegen.East] {
+						buildRectangle(drawX+(cellSize-wallWidth), drawY, cellSize, wallWidth, colornames.Blue, thickness).Draw(win)
+					}
+					if cell.Walls[mazegen.South] {
+						buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Blue, thickness).Draw(win)
+					}
+					if cell.Walls[mazegen.West] {
+						buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Blue, thickness).Draw(win)
+					}
 
 					// northStr := "N"
 					// eastStr := "E"
