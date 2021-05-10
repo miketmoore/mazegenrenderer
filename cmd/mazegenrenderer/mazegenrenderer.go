@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"os"
 
 	"github.com/faiface/pixel"
@@ -80,6 +81,7 @@ func run() {
 			rows := 20
 			cols := 20
 			random := mazegen.NewRandom()
+			grid = nil
 			grid, err = mazegen.BuildMaze(rows, cols, random)
 			if err != nil {
 				fmt.Println(err)
@@ -90,25 +92,35 @@ func run() {
 		case "render":
 			originX := 100.0
 			originY := 100.0
-			cellSize := 25.0
+			cellSize := 30.0
+			wallWidth := 8.0
 			for y, cells := range grid.Cells {
 				drawY := originY + (float64(y) * cellSize)
-				for x := range cells {
+				for x, cell := range cells {
 
 					drawX := originX + (float64(x) * cellSize)
-					buildRectangle(drawX, drawY, cellSize, cellSize).Draw(win)
+					buildRectangle(drawX, drawY, cellSize, cellSize, colornames.White, 0).Draw(win)
 
-					// if cell.Walls[mazegen.North] == true {
-					// 	// draw north wall
-
-					// 	drawRectangle()
-					// }
+					if cell.Walls[mazegen.North] {
+						buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Blue, 0).Draw(win)
+					}
+					if cell.Walls[mazegen.East] {
+						buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Blue, 0).Draw(win)
+					}
+					if cell.Walls[mazegen.South] {
+						buildRectangle(drawX, drawY, cellSize, wallWidth, colornames.Blue, 0).Draw(win)
+					}
+					if cell.Walls[mazegen.West] {
+						buildRectangle(drawX, drawY, wallWidth, cellSize, colornames.Blue, 0).Draw(win)
+					}
 
 				}
 			}
 			state = "view"
 		case "view":
-			//
+			if win.JustPressed(pixelgl.KeyEnter) {
+				state = "buildmaze"
+			}
 		}
 
 		win.Update()
@@ -116,12 +128,12 @@ func run() {
 	}
 }
 
-func buildRectangle(x, y, w, h float64) *imdraw.IMDraw {
+func buildRectangle(x, y, w, h float64, color color.RGBA, thickness float64) *imdraw.IMDraw {
 	shape := imdraw.New(nil)
-	shape.Color = colornames.Blue
+	shape.Color = color
 	shape.Push(pixel.V(x, y))
 	shape.Push(pixel.V(x+h, y+w))
-	shape.Rectangle(1)
+	shape.Rectangle(thickness)
 	return shape
 }
 
