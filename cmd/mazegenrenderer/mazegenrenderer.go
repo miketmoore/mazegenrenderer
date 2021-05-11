@@ -88,6 +88,8 @@ func run() {
 
 	var grid *mazegen.Grid
 
+	batch := pixel.NewBatch(&pixel.TrianglesData{}, nil)
+
 	for !window.Closed() {
 
 		// Quit application when user input matches
@@ -108,7 +110,9 @@ func run() {
 			state = "render"
 		case "render":
 			window.Clear(colornames.White)
-			drawMaze(debug, text, window, grid, mazeDrawData)
+			batch.Clear()
+			drawMaze(batch, debug, text, window, grid, mazeDrawData)
+			batch.Draw(window)
 			state = "view"
 		case "view":
 			if window.JustPressed(pixelgl.KeyEnter) {
@@ -122,6 +126,7 @@ func run() {
 }
 
 func drawMaze(
+	batch *pixel.Batch,
 	debug bool,
 	text *text.Text,
 	window *pixelgl.Window,
@@ -164,16 +169,16 @@ func drawMaze(
 
 			if drawWalls {
 				if cell.Walls[mazegen.North] {
-					buildRectangle(drawX, drawY+(cellSize-wallWidth), wallWidth, cellSize, wallColor, thickness).Draw(window)
+					buildRectangle(drawX, drawY+(cellSize-wallWidth), wallWidth, cellSize, wallColor, thickness).Draw(batch)
 				}
 				if cell.Walls[mazegen.East] {
-					buildRectangle(drawX+(cellSize-wallWidth), drawY, cellSize, wallWidth, wallColor, thickness).Draw(window)
+					buildRectangle(drawX+(cellSize-wallWidth), drawY, cellSize, wallWidth, wallColor, thickness).Draw(batch)
 				}
 				if cell.Walls[mazegen.South] {
-					buildRectangle(drawX, drawY, wallWidth, cellSize, wallColor, thickness).Draw(window)
+					buildRectangle(drawX, drawY, wallWidth, cellSize, wallColor, thickness).Draw(batch)
 				}
 				if cell.Walls[mazegen.West] {
-					buildRectangle(drawX, drawY, cellSize, wallWidth, wallColor, thickness).Draw(window)
+					buildRectangle(drawX, drawY, cellSize, wallWidth, wallColor, thickness).Draw(batch)
 				}
 			}
 
