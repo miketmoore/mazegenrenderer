@@ -8,10 +8,8 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
-	"github.com/faiface/pixel/text"
 	"github.com/miketmoore/mazegen"
 	"golang.org/x/image/colornames"
-	"golang.org/x/image/font/basicfont"
 )
 
 type MazeDrawData struct {
@@ -24,11 +22,11 @@ const windowHeight = 800
 const windowWidth = 800
 
 var mazeDrawData = &MazeDrawData{
-	rows:      78,
-	columns:   78,
+	rows:      156,
+	columns:   156,
 	originX:   10,
 	originY:   windowHeight - 10,
-	cellSize:  10,
+	cellSize:  5,
 	wallWidth: 1,
 	thickness: 0,
 	drawWalls: true,
@@ -78,12 +76,6 @@ func run() {
 	}
 	debugPrintln("window initialized")
 
-	debugPrintln("initializing text...")
-	atlas := text.NewAtlas(basicfont.Face7x13, text.ASCII)
-	text := text.New(pixel.V(20, 50), atlas)
-	text.Color = colornames.Green
-	debugPrintln("text initialized")
-
 	state := "buildmaze"
 
 	var grid *mazegen.Grid
@@ -111,7 +103,7 @@ func run() {
 		case "render":
 			window.Clear(colornames.White)
 			batch.Clear()
-			drawMaze(batch, debug, text, window, grid, mazeDrawData)
+			drawMaze(batch, debug, window, grid, mazeDrawData)
 			batch.Draw(window)
 			state = "view"
 		case "view":
@@ -128,7 +120,6 @@ func run() {
 func drawMaze(
 	batch *pixel.Batch,
 	debug bool,
-	text *text.Text,
 	window *pixelgl.Window,
 	grid *mazegen.Grid,
 	mazeDrawData *MazeDrawData,
@@ -182,20 +173,6 @@ func drawMaze(
 				}
 			}
 
-			if debug {
-				message := fmt.Sprintf("%d", count)
-				text.Clear()
-				fmt.Fprintln(text, message)
-			}
-
-			rect := pixel.R(drawX, drawY, drawX+cellSize, drawY+cellSize)
-
-			cellCenter := rect.Center()
-			vectorDiff := cellCenter.Sub(text.Bounds().Center())
-
-			matrix := pixel.IM.Moved(vectorDiff)
-			matrix = matrix.Scaled(text.Orig, 1)
-			text.Draw(window, matrix)
 			count++
 		}
 	}
